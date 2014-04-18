@@ -146,9 +146,10 @@ namespace selnium
                 b.executeJavaScript(js.removeWaitDialog);
             }
 
-            public IWebElement getClickedElement()
+            public string getClickedElementCss()
             {
-                return (IWebElement)b.executeJavaScript(js.getClickedElement);
+                IWebElement e = (IWebElement)b.executeJavaScript(js.getClickedElement);
+                return (string)b.executeJavaScript(js.getCssSelector, e);
             }
 
             public bool inputIsPresent()

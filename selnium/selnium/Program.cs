@@ -42,6 +42,7 @@ namespace selnium
         GUI form = new GUI();
         Stylesheet stylesheet = new Stylesheet();
         List<IWebElement> toBeClicked = new List<IWebElement>();
+        List<UserInput> timeOrderedUserInput = new List<UserInput>(); // records set of strings typed into browser, in order of typing.
         String lastClickedElementID = null;
         String lastClickedElementCss = null;
         List<object> allActions = new List<object>(); // a list to keep order of elements clicked and elements typed into
@@ -66,11 +67,16 @@ namespace selnium
             {
                 if (driver.clickIntercepter.inputIsPresent())
                 {
-                    string keys = driver.clickIntercepter.getTypedKeys();
-                    Console.Write("someone type: " + keys);
-                    driver.typeIntoElement(driver.clickIntercepter.getClickedElement(), keys);
+                    string text = driver.clickIntercepter.getTypedKeys();
+                    string css = driver.clickIntercepter.getClickedElementCss();
+                    Console.Write("someone type: " + text);
+                    driver.clickIntercepter.Off(); // may be unnecessary
+                    driver.typeIntoElement(By.CSS(css), text);
+                    UserInput input = new UserInput() {css=css, text=text};
+                    timeOrderedUserInput.Add(input);
                     driver.clickIntercepter.removeWaitDialog();
-                    Thread.Sleep(1000);
+                    Thread.Sleep(10);
+                    driver.clickIntercepter.On();
                 }
                 else
                 {
@@ -168,5 +174,11 @@ namespace selnium
         //    System.Threading.Thread.Sleep(100);
         //    JavaScript.removeElementHighlighting(id, pastStyle);
         //}
+    }
+
+    class UserInput
+    {
+        public string css { get; set; }
+        public string text { get; set; }
     }
 }

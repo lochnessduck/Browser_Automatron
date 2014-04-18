@@ -161,7 +161,7 @@ namespace selnium
         //http://paste.blixt.org/297640
         public string getCssSelector(IWebElement e)
         {  // i have arguments[0] in place of this
-            string jscript = @"jQuery.fn.getPath = function () {
+            string getCssSelector = @"jQuery.fn.getPath = function () {
                 if (this.length != 1) throw 'Requires one element.';
 
                 var path, node = this;
