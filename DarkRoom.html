@@ -1,0 +1,91 @@
+<html>
+<head>
+	<style>
+		#container{
+			margin: auto;
+			position: absolute;
+			bottom: 0;
+			left: 0;
+			top: 0;
+			right: 0;
+			width: 500px;
+			height: 100px;
+			text-align: center;
+		}
+		button {
+			padding: 5px 15px;
+			font-size: 20;
+		}
+		iframe {
+			visibility: hidden;
+		}
+	</style>
+	
+	<script src="http://code.jquery.com/jquery-1.11.0.min.js"></script>
+	
+	<script type="text/javascript">
+		$(document).ready(function () {
+			preloadSound('http://www.howjsay.com/mp3/you.mp3');
+			preloadSound('http://www.howjsay.com/mp3/awake.mp3');
+			preloadSound('http://www.howjsay.com/mp3/to.mp3');
+			preloadSound('http://www.howjsay.com/mp3/find.mp3');
+			preloadSound('http://www.howjsay.com/mp3/yourself.mp3');
+			preloadSound('http://www.howjsay.com/mp3/in.mp3');
+			preloadSound('http://www.howjsay.com/mp3/a.mp3');
+			preloadSound('http://www.howjsay.com/mp3/dark.mp3');
+			preloadSound('http://www.howjsay.com/mp3/room.mp3');
+			
+			var isOpera = !!window.opera || navigator.userAgent.indexOf(' OPR/') >= 0;
+			var isChrome = !!window.chrome && !isOpera;
+			
+			if (!isChrome) {
+				$('#container').html('<p>Please use Google Chrome</p>');
+			}
+			else {
+				$('#container').html('<button>Start</button>');
+			}
+			
+			$('button').click(function () {
+				$(this).fadeOut('slow');
+				setTimeout(function(){
+					$('#container').append($('<iframe/>'))
+					
+					$('iframe').attr('src','http://www.howjsay.com/mp3/you.mp3');
+					setTimeout(function(){$('iframe').attr('src','http://www.howjsay.com/mp3/awake.mp3');},500);
+					setTimeout(function(){$('iframe').attr('src','http://www.howjsay.com/mp3/to.mp3');},1100);
+					setTimeout(function(){$('iframe').attr('src','http://www.howjsay.com/mp3/find.mp3');},1600);
+					setTimeout(function(){$('iframe').attr('src','http://www.howjsay.com/mp3/yourself.mp3');},2300);
+					setTimeout(function(){$('iframe').attr('src','http://www.howjsay.com/mp3/in.mp3');},3100);
+					setTimeout(function(){$('iframe').attr('src','http://www.howjsay.com/mp3/a.mp3');},3600);
+					setTimeout(function(){$('iframe').attr('src','http://www.howjsay.com/mp3/dark.mp3');},4000);
+					setTimeout(function(){$('iframe').attr('src','http://www.howjsay.com/mp3/room.mp3');},4700);		
+					setTimeout(function(){
+						$('iframe').remove();
+						$('button').html('Replay');
+						$('button').fadeIn('slow');
+					},5550);
+				}, 1000);
+			});
+		});
+		
+		function preloadSound(src) {
+			var sound = document.createElement("audio");
+			if ("src" in sound) {
+				sound.autoPlay = false;
+			}
+			else {
+				sound = document.createElement("bgsound");
+				sound.volume = -10000;
+			}
+			sound.src = src;
+			document.body.appendChild(sound);
+			return sound;
+		}
+	</script>
+</head>
+<body>
+	<div>
+		<div id="container">&nbsp;</div>
+	</div>
+</body>
+</html>
