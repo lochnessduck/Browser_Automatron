@@ -13,18 +13,19 @@ namespace selnium
 {
     public partial class GUI : Form
     {
-        private IWebDriver driver { get; set; }
+        public IWebDriver driver { get; set; }
+        public bool recording = false;
         
         public GUI()
         {
             InitializeComponent();
         }
 
-        public void SetDriver(ref IWebDriver driverByRef)
+        /*public void SetDriver(ref BetterChrome driverByRef)
         {
             // to avoid initializing two drivers, this driver is passed by reference
             driver = driverByRef;
-        }
+        }*/
 
         private void exampleButton_Click(object sender, EventArgs e)
         {
@@ -34,6 +35,46 @@ namespace selnium
         }
 
         private void GUI_Load(object sender, EventArgs e)
+        {
+
+        }
+
+        private void GoButton_Click(object sender, EventArgs e)
+        {
+            driver.Url = navigateToTextBox.Text;
+            driver.Navigate();
+        }
+
+        private void RecordAndPauseButton_Click(object sender, EventArgs e)
+        {
+            // Turn on click intercept
+            Button button = (Button)sender;
+            recording = !recording;
+            if (recording)
+            {
+                //driver.setupForRecording();
+                button.Text = "█ █";  //maybe set font smaller?
+                button.Font = new Font("Microsoft Sans Serif", 16);
+            }
+            else
+            {
+                button.Text = "•";
+                //driver.teardownRecording();
+                button.Font = new Font("Microsoft Sans Serif", 36);
+                
+            }
+        }
+
+        private void StopButton_Click(object sender, EventArgs e)
+        {
+            // if recording
+                // prompt user to save or discard recording
+                // file save ui
+            // else if playback
+                // Program????.reloadUserActionsListFromBeginning()
+        }
+
+        private void PlayAndPauseButton_Click(object sender, EventArgs e)
         {
 
         }

@@ -15,23 +15,10 @@ namespace selnium
 {
 
     /* TODO
-     * monitor for change in URL w/o any click
-     * load jquery from c:\monkeydo\
-     * call JavaScript.scroll_into_view(), looks like it wasn't being called before
-     * LANCE: Look at available Selenium IDE plugins, find a way to make Selenium IDE export current browser activity (as a way to use the IDE for recording actions, rather than rolling our own solution)
-     * LANCE: finish making xpath work - use xpath in getting elements from browser.
-     * ANGELA: Research keypress vs keydown. Need to log all keys, but need to get case sensitivity. Also fix problem with some key presses not getting logged by javascript. http://www.mkyong.com/jquery/jquery-keyboard-events-example/ http://stackoverflow.com/questions/8071415/how-to-efficiently-record-user-typing-using-javascript Answer #2 has a good point... user can click to move cursor and keep typing...
-     * ANGELA: GUI
-     * Lance: make Css selectors work (or troubleshoot why css generator fails) - note that it worked when sending keys to the input  DONE :D
-     * LANCE: alter the rules and pray it is not altered further
-     * Lance: change all functions that return window variables to return default values if window.variable == undefined
-     * I really like the idea of having the user type what they want in the browser in a separate pop-up that we supply.
-     *     -prevents us from having to capture keystrokes
+     * LANCE: change all functions that return window variables to return default values if window.variable == undefined
      * LANCE - finish cleaning up code so that keystrokes are gathered and "please wait..." window is 
      * removed after the user has entered some input
-     * SPRING CLEANING!!! ( setup click intercept in BetterChrome )
-     * LANCE  - get b.executeJavaScript to work (it fails when trying to return a value (aside from null))
-     * ANGELA - Fix the dialog closing bug
+     * LANCE  - get b.executeJavaScript to work (it fails when trying to return a value (aside from null)) (maybe asyncscript doesn't work)
      */
 
     class Program
@@ -43,9 +30,7 @@ namespace selnium
         Stylesheet stylesheet = new Stylesheet();
         List<IWebElement> toBeClicked = new List<IWebElement>();
         List<UserInput> timeOrderedUserInput = new List<UserInput>(); // records set of strings typed into browser, in order of typing.
-        String lastClickedElementID = null;
-        String lastClickedElementCss = null;
-        List<object> allActions = new List<object>(); // a list to keep order of elements clicked and elements typed into
+        List<UserInput> previouslyPlayedUserActions = new List<UserInput>();
 
         static void Main(string[] args)
         {
@@ -60,20 +45,26 @@ namespace selnium
 
         public void TestMain()
         {
+            Application.Run(form);  // seems to block parallel application execution
+            //form.SetDriver(driver);
+            form.Show();
+
             driver.Url = "file:///C:/selenium/theform.html";
             driver.Navigate();
             string prefix  ="auto_";
-            while (true)
+            while (false)
             {
                 if (driver.clickIntercepter.inputIsPresent())
                 {
+                    // when global variables are setup, js.setupClickIntercept sets up where clickedElement will be recorded,
+                    // and js.initDialogs sets up where user-typed input from the popup UI will be recorded
                     string text = driver.clickIntercepter.getTypedKeys();
                     string css = driver.clickIntercepter.getClickedElementCss();
-                    Console.Write("someone type: " + text);
-                    driver.clickIntercepter.Off(); // may be unnecessary
-                    driver.typeIntoElement(By.CSS(css), text);
                     UserInput input = new UserInput() {css=css, text=text};
                     timeOrderedUserInput.Add(input);
+                    Console.Write("someone type: " + input.text);
+                    driver.clickIntercepter.Off(); // may be unnecessary
+                    driver.typeIntoElement(By.CssSelector(input.css), input.text);
                     driver.clickIntercepter.removeWaitDialog();
                     Thread.Sleep(10);
                     driver.clickIntercepter.On();
@@ -88,8 +79,7 @@ namespace selnium
             //System.Threading.Thread t = new System.Threading.Thread(new System.Threading.ThreadStart(ThreadProc));
             //t.Start();
             //Thread.Sleep(100000000);
-            //Application.Run(form);  // seems to block parallel application execution
-            //form.Show();
+            
             
 
             //while (true)
@@ -174,6 +164,26 @@ namespace selnium
         //    System.Threading.Thread.Sleep(100);
         //    JavaScript.removeElementHighlighting(id, pastStyle);
         //}
+
+        public void Playback(int pauseBetweenActions)
+        {
+            //foreach (UserInput input in timeOrderedUserInput)
+            while (timeOrderedUserInput.Count > 0)
+            {
+                UserInput input = timeOrderedUserInput.ElementAt(0);
+                timeOrderedUserInput.RemoveAt(0);
+                previouslyPlayedUserActions.Add(input);
+                driver.typeIntoElement(By.CssSelector(input.css), input.text);
+                System.Threading.Thread.Sleep(pauseBetweenActions);  // in milliseconds
+                // check for pause condition here. if so, break
+            }
+        }
+
+        public void reloadUserActionsListFromBeginning()
+        {
+            timeOrderedUserInput = (List<UserInput>)previouslyPlayedUserActions.Concat(timeOrderedUserInput);
+            previouslyPlayedUserActions.Clear();
+        }
     }
 
     class UserInput

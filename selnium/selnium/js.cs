@@ -42,7 +42,7 @@ namespace selnium
                                             head.appendChild(scriptElt);
                                             head.innerHTML = head.innerHTML + '<link rel=\'stylesheet\' href=\'http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.4/themes/smoothness/jquery-ui.css\' />';";
 
-        public static string setupClickIntercept = @"$('input[type=text], input[type=password], textarea').not('#idontknow').unbind('focus').focus(function() {
+        public static string setupClickIntercept = @"$('input[type=text], input[type=password], textarea').not('#" + prefix + @"userInput').unbind('focus').focus(function() {
                                                         window." + prefix + @"clickedElement = $(this);
                                                         $(this).blur(); // super important to remove the focus from the input, otherwise focus will be returned to the input once the dialog is closed and the click intercepted again
                                                         openPrompt();
@@ -54,7 +54,6 @@ namespace selnium
         public static string teardownClickIntercept = @"$('input[type=text], input[type=password], textarea').unbind('focus');";
 
         public static string setupGlobalVariables = @"window." + prefix + @"clickedElement = null;
-                                                    window." + prefix + @"clickedElement = null;
                                                     window." + prefix + @"randomString = 'Shmoop';
                                                     window." + prefix + @"typedKeys = '';";
 
@@ -76,14 +75,14 @@ namespace selnium
                                                 + "return pastStyle;";
 
         public static string initDialogs = @"var inputDialog = $('<div id=\'" + prefix + @"inputDialog\'></div>');
-                                            inputDialog.append('<br /><input type=\'text\' id=\'idontknow\' />');
+                                            inputDialog.append('<br /><input type=\'text\' id=\'" + prefix + @"userInput\' />');
                                             $('body').append(inputDialog);
                                             $('#" + prefix + @"inputDialog').dialog({
                                                 modal: true,
                                                 autoOpen: false,
                                                 buttons: {
                                                     StupendousButton:function() {
-                                                        window." + prefix + @"typedKeys = $('#idontknow').val();
+                                                        window." + prefix + @"typedKeys = $('#" + prefix + @"userInput').val();
                                                         console.log(window." + prefix + @"typedKeys);
                                                         $(this).dialog('close');
                                                         $('#" + prefix + @"waitDialog').dialog('open');

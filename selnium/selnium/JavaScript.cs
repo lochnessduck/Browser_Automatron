@@ -188,7 +188,7 @@ namespace selnium
             };
             return $(arguments[0]).getPath();";
             IJavaScriptExecutor js = (IJavaScriptExecutor)driver;
-            return (string)js.ExecuteScript(jscript, e);
+            return (string)js.ExecuteScript(getCssSelector, e);
         }
 
         public string getTextTyped()
