@@ -53,19 +53,14 @@ namespace selnium
             if (recording)
             {
                 //driver.setupForRecording();
-                button.Text = "█ █";  //maybe set font smaller?
-                button.Font = new Font("Microsoft Sans Serif", 16);
             }
             else
             {
-                button.Text = "•";
                 //driver.teardownRecording();
-                button.Font = new Font("Microsoft Sans Serif", 36);
-                
             }
         }
 
-        private void StopButton_Click(object sender, EventArgs e)
+        private void StopRecordingButton_Click(object sender, EventArgs e)
         {
             // if recording
                 // prompt user to save or discard recording
@@ -74,9 +69,18 @@ namespace selnium
                 // Program????.reloadUserActionsListFromBeginning()
         }
 
-        private void PlayAndPauseButton_Click(object sender, EventArgs e)
+        private void PlayButton_Click(object sender, EventArgs e)
         {
+            PauseButton.Visible = true;
+            PlayButton.Visible = false;
+            PlayPauseLabel.Text = "Pause";
+        }
 
+        private void PauseButton_Click(object sender, EventArgs e)
+        {
+            PlayButton.Visible = true;
+            PauseButton.Visible = false;
+            PlayPauseLabel.Text = "Play";
         }
     }
 }
