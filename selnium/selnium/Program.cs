@@ -45,12 +45,13 @@ namespace selnium
 
         public void TestMain()
         {
-            Application.Run(form);  // seems to block parallel application execution
-            //form.SetDriver(driver);
-            form.Show();
+            //Application.Run(form);  // seems to block parallel application execution
+            ////form.SetDriver(driver);
+            //form.Show();
 
             driver.Url = "file:///C:/selenium/theform.html";
-            driver.Navigate();
+            //driver.Navigate();
+            driver.navigateAndLoadJquery();
             string prefix  ="auto_";
             while (false)
             {

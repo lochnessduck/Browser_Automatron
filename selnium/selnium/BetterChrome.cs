@@ -27,6 +27,13 @@ namespace selnium
             base.Navigate();
         }
 
+        public void navigateAndLoadJquery()
+        {
+            Navigate();
+            this.jquery = new jQuery() { b = this };
+            this.jquery.load();
+        }
+
         public void setupForRecording()
         {
             this.jquery = new jQuery() { b = this };
@@ -174,17 +181,27 @@ namespace selnium
         {
             public void load()
             {
+                load4lance();
+                load_ui_4lance();
+                return;
                 // http://sqa.stackexchange.com/questions/2921/webdriver-can-i-inject-a-jquery-script-for-a-page-that-isnt-using-jquery
                 // give jQuery time to load asynchronously
                 b.Manage().Timeouts().SetScriptTimeout(new TimeSpan(0, 0, 1));
                 b.executeJavaScript(js.jQueryLoader);
                 load_ui();
             }
+            
             public void load4lance()
             {  // used in loading jquery for lance.
                 string isJqueryLoaded = "return (typeof jQuery == 'undefined');";
                 string jqueryLoadByString = System.IO.File.ReadAllText(@"C:\selenium\jquery.min.js");
                 b.ExecuteScript(jqueryLoadByString);
+            }
+
+            public void load_ui_4lance()
+            {
+                string jqueryUIloadByString = System.IO.File.ReadAllText(@"C:\selenium\jquery-ui.min.js");
+                b.ExecuteScript(jqueryUIloadByString);
             }
 
             private void load_ui()
