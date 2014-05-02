@@ -9,6 +9,9 @@ using System.Threading;
 using System.Collections.ObjectModel;
 using System.Collections;
 using System.Windows.Forms;
+using System.IO;
+using CsvHelper;
+using Microsoft.Win32;
 
 
 namespace selnium
@@ -21,7 +24,7 @@ namespace selnium
      * LANCE  - get b.executeJavaScript to work (it fails when trying to return a value (aside from null)) (maybe asyncscript doesn't work)
      */
 
-    class Program
+    public class Program
     {
         
         BetterChrome driver = new BetterChrome(@"C:\selenium\");  //ChromeDriver(@"C:\selenium\");
@@ -31,7 +34,9 @@ namespace selnium
         List<IWebElement> toBeClicked = new List<IWebElement>();
         List<UserInput> timeOrderedUserInput = new List<UserInput>(); // records set of strings typed into browser, in order of typing.
         List<UserInput> previouslyPlayedUserActions = new List<UserInput>();
+        public bool isRecording = false;
 
+        [STAThread]
         static void Main(string[] args)
         {
             Program p = new Program();
@@ -45,15 +50,18 @@ namespace selnium
 
         public void TestMain()
         {
-            //Application.Run(form);  // seems to block parallel application execution
+            UserInput in1 = new UserInput(){css = "css1", text = "hoobloob"};
+            timeOrderedUserInput.Add(in1);
+            form.program = this;
+            Application.Run(form);  // seems to block parallel application execution
             ////form.SetDriver(driver);
-            //form.Show();
+            form.Show();
 
             driver.Url = "file:///C:/selenium/theform.html";
             //driver.Navigate();
             driver.navigateAndLoadJquery();
             string prefix  ="auto_";
-            while (false)
+            while (this.isRecording)
             {
                 if (driver.clickIntercepter.inputIsPresent())
                 {
@@ -166,6 +174,12 @@ namespace selnium
         //    JavaScript.removeElementHighlighting(id, pastStyle);
         //}
 
+        // save a list of userActions to csv file. default for now will be timeOrderedUserInput
+        public void saveSession()
+        {
+
+        }
+
         public void Playback(int pauseBetweenActions)
         {
             //foreach (UserInput input in timeOrderedUserInput)
@@ -184,6 +198,42 @@ namespace selnium
         {
             timeOrderedUserInput = (List<UserInput>)previouslyPlayedUserActions.Concat(timeOrderedUserInput);
             previouslyPlayedUserActions.Clear();
+        }
+
+        public void saveUserInputs()
+        {
+            string filepath = getFolderFromUser();
+            CsvWriter csv = new CsvWriter(File.CreateText(filepath));
+            foreach (UserInput userInput in timeOrderedUserInput)
+            {
+                csv.WriteRecord(userInput);
+            }
+        }
+
+        public string getFilenameFromUser()
+        {
+            System.Windows.Forms.OpenFileDialog dlg = new System.Windows.Forms.OpenFileDialog();
+            // Set filter for file extension and default file extension 
+            dlg.DefaultExt = ".csv";
+            dlg.Filter = "CSV files (*.csv)|*.csv";
+            // Display OpenFileDialog by calling ShowDialog method 
+            DialogResult result = dlg.ShowDialog();
+            if (result.Equals(DialogResult.OK))
+            {
+                return dlg.FileName; //maybe return result.ToString()??
+            }
+            throw new System.ArgumentException("user did not select a file for loading CSV");
+        }
+
+        public string getFolderFromUser()
+        {
+            System.Windows.Forms.FolderBrowserDialog dlg = new System.Windows.Forms.FolderBrowserDialog();
+            DialogResult result = dlg.ShowDialog();
+            if (result.Equals(DialogResult.OK))
+            {
+                return dlg.SelectedPath; // maybe return result.ToString()??
+            }
+            throw new System.ArgumentException("user did not select a folder for saving CSV");
         }
     }
 

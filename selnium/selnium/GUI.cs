@@ -14,7 +14,7 @@ namespace selnium
     public partial class GUI : Form
     {
         public IWebDriver driver { get; set; }
-        public bool recording = false;
+        public Program program { get; set; }
         
         public GUI()
         {
@@ -45,23 +45,28 @@ namespace selnium
             driver.Navigate();
         }
 
-        private void RecordAndPauseButton_Click(object sender, EventArgs e)
+        private void RecordButton_Click(object sender, EventArgs e)
         {
-            // Turn on click intercept
-            Button button = (Button)sender;
-            recording = !recording;
-            if (recording)
-            {
-                //driver.setupForRecording();
-            }
-            else
-            {
-                //driver.teardownRecording();
-            }
+            PauseRecordingButton.Visible = true;
+            RecordButton.Visible = false;
+            RecordPauseLabel.Text = "Pause";
+            this.program.isRecording = true;
+            //driver.setupForRecording();
+            SaveRecordingButton.Visible = true;
+        }
+
+        private void PauseRecordingButton_Click(object sender, EventArgs e)
+        {
+            PauseRecordingButton.Visible = false;
+            RecordButton.Visible = true;
+            RecordPauseLabel.Text = "Record";
+            this.program.isRecording = false;
+            //driver.teardownRecording();
         }
 
         private void StopRecordingButton_Click(object sender, EventArgs e)
         {
+            this.program.isRecording = false;
             // if recording
                 // prompt user to save or discard recording
                 // file save ui
@@ -73,14 +78,23 @@ namespace selnium
         {
             PauseButton.Visible = true;
             PlayButton.Visible = false;
+            PauseButton.Focus();
             PlayPauseLabel.Text = "Pause";
         }
 
         private void PauseButton_Click(object sender, EventArgs e)
         {
-            PlayButton.Visible = true;
             PauseButton.Visible = false;
+            PlayButton.Visible = true;
+            PlayButton.Focus();
             PlayPauseLabel.Text = "Play";
+        }
+
+        private void SaveRecordingButton_Click(object sender, EventArgs e)
+        {
+            this.RecordButton.PerformClick();
+            RecordPauseLabel.Text = "Continue";
+            program.saveUserInputs();
         }
     }
 }
