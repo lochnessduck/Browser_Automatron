@@ -80,6 +80,8 @@ namespace selnium
             PlayButton.Visible = false;
             PauseButton.Focus();
             PlayPauseLabel.Text = "Pause";
+            program.populateProgressListBox();
+            program.Playback(2000);
         }
 
         private void PauseButton_Click(object sender, EventArgs e)
@@ -96,5 +98,13 @@ namespace selnium
             RecordPauseLabel.Text = "Continue";
             program.saveUserInputs();
         }
+
+        // see this stack overflow for allowing dragging and rearranging of the list items.
+        //https://stackoverflow.com/questions/3350187/wpf-c-rearrange-items-in-listbox-via-drag-and-drop
+        private void listBox1_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            
+        }
+
     }
 }

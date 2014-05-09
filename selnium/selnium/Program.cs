@@ -21,7 +21,11 @@ namespace selnium
      * LANCE: change all functions that return window variables to return default values if window.variable == undefined
      * LANCE - finish cleaning up code so that keystrokes are gathered and "please wait..." window is 
      * removed after the user has entered some input
-     * LANCE  - get b.executeJavaScript to work (it fails when trying to return a value (aside from null)) (maybe asyncscript doesn't work)
+     * LANCE  - get b.executeJavaScript to work (it fails when trying to return a value (aside from null)) (maybe asyncscript doesn't work)     
+     * ANGELA - CSV stuffs
+     * ANGELA - GUI bugs
+     * Next time - display gui changes in real-time; currently gui is visually updated AFTER function is fully finished.
+     * Next time - figure out how to run gui as parallel process (so that user can interact with GUI as it is inputting userActions)
      */
 
     public class Program
@@ -33,7 +37,6 @@ namespace selnium
         Stylesheet stylesheet = new Stylesheet();
         List<IWebElement> toBeClicked = new List<IWebElement>();
         List<UserInput> timeOrderedUserInput = new List<UserInput>(); // records set of strings typed into browser, in order of typing.
-        List<UserInput> previouslyPlayedUserActions = new List<UserInput>();
         public bool isRecording = false;
 
         [STAThread]
@@ -50,17 +53,17 @@ namespace selnium
 
         public void TestMain()
         {
-            UserInput in1 = new UserInput(){css = "css1", text = "hoobloob"};
+            UserInput in1 = new UserInput(){css = "input", text = "hoobloob", inPlaybackQueue = true };
             timeOrderedUserInput.Add(in1);
             form.program = this;
-            Application.Run(form);  // seems to block parallel application execution
             ////form.SetDriver(driver);
-            form.Show();
 
             driver.Url = "file:///C:/selenium/theform.html";
-            //driver.Navigate();
-            driver.navigateAndLoadJquery();
-            string prefix  ="auto_";
+            driver.Navigate();
+            //driver.navigateAndLoadJquery();
+            Application.Run(form);
+            form.Show(); // seems to block parallel application execution
+            string prefix = "auto_";
             while (this.isRecording)
             {
                 if (driver.clickIntercepter.inputIsPresent())
@@ -69,7 +72,7 @@ namespace selnium
                     // and js.initDialogs sets up where user-typed input from the popup UI will be recorded
                     string text = driver.clickIntercepter.getTypedKeys();
                     string css = driver.clickIntercepter.getClickedElementCss();
-                    UserInput input = new UserInput() {css=css, text=text};
+                    UserInput input = new UserInput() {css=css, text=text, inPlaybackQueue = true};
                     timeOrderedUserInput.Add(input);
                     Console.Write("someone type: " + input.text);
                     driver.clickIntercepter.Off(); // may be unnecessary
@@ -180,24 +183,59 @@ namespace selnium
 
         }
 
+        public void populateProgressListBox()
+        {
+            form.listBoxProgress.Items.Clear();  // remove all items from listbox and re-populate
+            foreach (UserInput input in timeOrderedUserInput)
+            {
+                form.listBoxProgress.Items.Add(new ListViewItem() {Text = "schmoop" }); //input.ToString()
+            }
+        }
+
         public void Playback(int pauseBetweenActions)
         {
-            //foreach (UserInput input in timeOrderedUserInput)
-            while (timeOrderedUserInput.Count > 0)
+            // assume one-to-one match of progresslistbox entries and timeOrderedUserInput
+            // so we grab the index of the highlighted progressListBox entry, and use that as
+            // our starting index. We then enter the UserAction from timeOrderedUserInput and 
+            // focus the next progressListBox entry and check for a pause condition.
+            int i = 0;
+            foreach (ListViewItem item in form.listBoxProgress.Items)
             {
-                UserInput input = timeOrderedUserInput.ElementAt(0);
-                timeOrderedUserInput.RemoveAt(0);
-                previouslyPlayedUserActions.Add(input);
-                driver.typeIntoElement(By.CssSelector(input.css), input.text);
+                if (item.Selected)  // or item.Focused??
+                {
+                    i = item.Index;
+                }
+            }
+            if (i == 0)
+            {
+                ((ListViewItem)form.listBoxProgress.Items[i]).Selected = true;
+            }
+            while(i < timeOrderedUserInput.Count)
+            {
+                ((ListViewItem)form.listBoxProgress.Items[i]).Selected = true;
                 System.Threading.Thread.Sleep(pauseBetweenActions);  // in milliseconds
                 // check for pause condition here. if so, break
+                UserInput input = timeOrderedUserInput[i];
+                driver.typeIntoElement(By.CssSelector(input.css), input.text);
+                input.inPlaybackQueue = false;
+                i++;
             }
+
+            //foreach (UserInput input in timeOrderedUserInput.Where(inpt => inpt.inPlaybackQueue))
+            //{
+            //    driver.typeIntoElement(By.CssSelector(input.css), input.text);
+            //    System.Threading.Thread.Sleep(pauseBetweenActions);  // in milliseconds
+            //    // check for pause condition here. if so, break
+            //    input.inPlaybackQueue = false;
+            //}
         }
 
         public void reloadUserActionsListFromBeginning()
         {
-            timeOrderedUserInput = (List<UserInput>)previouslyPlayedUserActions.Concat(timeOrderedUserInput);
-            previouslyPlayedUserActions.Clear();
+            foreach (UserInput input in timeOrderedUserInput.Where(inpt => inpt.inPlaybackQueue == false))
+            {
+                input.inPlaybackQueue = true;
+            }
         }
 
         public void saveUserInputs()
@@ -241,5 +279,6 @@ namespace selnium
     {
         public string css { get; set; }
         public string text { get; set; }
+        public bool inPlaybackQueue { get; set; }
     }
 }

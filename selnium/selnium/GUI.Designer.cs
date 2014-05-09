@@ -47,8 +47,11 @@
             this.label6 = new System.Windows.Forms.Label();
             this.PauseButton = new System.Windows.Forms.Button();
             this.PlayPauseLabel = new System.Windows.Forms.Label();
+            this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.listBoxProgress = new System.Windows.Forms.ListBox();
             this.RecordingGroupBox.SuspendLayout();
             this.PlaybackGroupBox.SuspendLayout();
+            this.groupBox1.SuspendLayout();
             this.SuspendLayout();
             // 
             // exampleButton
@@ -278,12 +281,34 @@
             this.PlayPauseLabel.TabIndex = 8;
             this.PlayPauseLabel.Text = "Play";
             // 
+            // groupBox1
+            // 
+            this.groupBox1.Controls.Add(this.listBoxProgress);
+            this.groupBox1.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.groupBox1.Location = new System.Drawing.Point(358, 12);
+            this.groupBox1.Name = "groupBox1";
+            this.groupBox1.Size = new System.Drawing.Size(238, 369);
+            this.groupBox1.TabIndex = 11;
+            this.groupBox1.TabStop = false;
+            this.groupBox1.Text = "Program Progress";
+            // 
+            // listBoxProgress
+            // 
+            this.listBoxProgress.FormattingEnabled = true;
+            this.listBoxProgress.ItemHeight = 16;
+            this.listBoxProgress.Location = new System.Drawing.Point(7, 22);
+            this.listBoxProgress.Name = "listBoxProgress";
+            this.listBoxProgress.Size = new System.Drawing.Size(225, 340);
+            this.listBoxProgress.TabIndex = 0;
+            this.listBoxProgress.SelectedIndexChanged += new System.EventHandler(this.listBox1_SelectedIndexChanged);
+            // 
             // GUI
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.Control;
-            this.ClientSize = new System.Drawing.Size(363, 390);
+            this.ClientSize = new System.Drawing.Size(608, 390);
+            this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.PlaybackGroupBox);
             this.Controls.Add(this.RecordingGroupBox);
             this.Controls.Add(this.label1);
@@ -295,6 +320,7 @@
             this.RecordingGroupBox.PerformLayout();
             this.PlaybackGroupBox.ResumeLayout(false);
             this.PlaybackGroupBox.PerformLayout();
+            this.groupBox1.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -321,5 +347,7 @@
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.Label PlayPauseLabel;
         private System.Windows.Forms.Button PauseRecordingButton;
+        private System.Windows.Forms.GroupBox groupBox1;
+        public System.Windows.Forms.ListBox listBoxProgress;
     }
 }
