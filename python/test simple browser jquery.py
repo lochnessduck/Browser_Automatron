@@ -14,5 +14,5 @@ def jquery_is_loaded():
 
 print(jquery_is_loaded())
 
-elements = b.execute_script('return $("#hplogo");')
-elements[0].click()
+element = b.execute_script('return $("#hplogo");')[0]
+element.click()
