@@ -8,6 +8,7 @@ using System.Text;
 using System.Windows.Forms;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
+using System.Threading;
 
 namespace selnium
 {
@@ -81,7 +82,7 @@ namespace selnium
             PauseButton.Focus();
             PlayPauseLabel.Text = "Pause";
             program.populateProgressListBox();
-            program.Playback(2000);
+            program.playback();
         }
 
         private void PauseButton_Click(object sender, EventArgs e)

@@ -30,7 +30,6 @@ namespace selnium
 
     public class Program
     {
-        
         BetterChrome driver = new BetterChrome(@"C:\selenium\");  //ChromeDriver(@"C:\selenium\");
         JavaScriptFunctions JavaScript = new JavaScriptFunctions();
         GUI form = new GUI();
@@ -48,7 +47,9 @@ namespace selnium
 
         public void ThreadProc()
         {
-            Application.Run(new GUI());
+            Application.Run(form);
+            form.Show(); // seems to block parallel application execution
+            //Application.Run(new GUI());
         }
 
         public void TestMain()
@@ -61,8 +62,9 @@ namespace selnium
             driver.Url = "file:///C:/selenium/theform.html";
             driver.Navigate();
             //driver.navigateAndLoadJquery();
-            Application.Run(form);
-            form.Show(); // seems to block parallel application execution
+            Thread t = new Thread(ThreadProc);
+            t.Start();
+            
             string prefix = "auto_";
             while (this.isRecording)
             {
@@ -192,12 +194,13 @@ namespace selnium
             }
         }
 
-        public void Playback(int pauseBetweenActions)
+        public void playback()
         {
             // assume one-to-one match of progresslistbox entries and timeOrderedUserInput
             // so we grab the index of the highlighted progressListBox entry, and use that as
             // our starting index. We then enter the UserAction from timeOrderedUserInput and 
             // focus the next progressListBox entry and check for a pause condition.
+            int pauseBetweenActions = 50;
             int i = 0;
             foreach (ListViewItem item in form.listBoxProgress.Items)
             {
