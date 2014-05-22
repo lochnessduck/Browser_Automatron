@@ -38,8 +38,8 @@
             this.RecordingGroupBox = new System.Windows.Forms.GroupBox();
             this.SaveRecordingButton = new System.Windows.Forms.Button();
             this.StopRecordingButton = new System.Windows.Forms.Button();
-            this.RecordButton = new System.Windows.Forms.Button();
             this.PauseRecordingButton = new System.Windows.Forms.Button();
+            this.RecordButton = new System.Windows.Forms.Button();
             this.PlaybackGroupBox = new System.Windows.Forms.GroupBox();
             this.button1 = new System.Windows.Forms.Button();
             this.LoadButton = new System.Windows.Forms.Button();
@@ -125,9 +125,9 @@
             this.RecordingGroupBox.Controls.Add(this.GoButton);
             this.RecordingGroupBox.Controls.Add(this.label2);
             this.RecordingGroupBox.Controls.Add(this.label4);
+            this.RecordingGroupBox.Controls.Add(this.RecordPauseLabel);
             this.RecordingGroupBox.Controls.Add(this.RecordButton);
             this.RecordingGroupBox.Controls.Add(this.PauseRecordingButton);
-            this.RecordingGroupBox.Controls.Add(this.RecordPauseLabel);
             this.RecordingGroupBox.Location = new System.Drawing.Point(12, 12);
             this.RecordingGroupBox.Name = "RecordingGroupBox";
             this.RecordingGroupBox.Size = new System.Drawing.Size(339, 215);
@@ -163,6 +163,21 @@
             this.StopRecordingButton.UseVisualStyleBackColor = false;
             this.StopRecordingButton.Click += new System.EventHandler(this.StopRecordingButton_Click);
             // 
+            // PauseRecordingButton
+            // 
+            this.PauseRecordingButton.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.PauseRecordingButton.FlatAppearance.MouseDownBackColor = System.Drawing.SystemColors.Control;
+            this.PauseRecordingButton.FlatAppearance.MouseOverBackColor = System.Drawing.SystemColors.Control;
+            this.PauseRecordingButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.PauseRecordingButton.ForeColor = System.Drawing.SystemColors.Control;
+            this.PauseRecordingButton.Image = global::selnium.Properties.Resources.pause_recording;
+            this.PauseRecordingButton.Location = new System.Drawing.Point(34, 102);
+            this.PauseRecordingButton.Name = "PauseRecordingButton";
+            this.PauseRecordingButton.Size = new System.Drawing.Size(35, 35);
+            this.PauseRecordingButton.TabIndex = 10;
+            this.PauseRecordingButton.UseVisualStyleBackColor = true;
+            this.PauseRecordingButton.Click += new System.EventHandler(this.PauseRecordingButton_Click);
+            // 
             // RecordButton
             // 
             this.RecordButton.BackColor = System.Drawing.SystemColors.Control;
@@ -180,26 +195,14 @@
             this.RecordButton.UseVisualStyleBackColor = false;
             this.RecordButton.Click += new System.EventHandler(this.RecordButton_Click);
             // 
-            // PauseRecordingButton
-            // 
-            this.PauseRecordingButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.PauseRecordingButton.ForeColor = System.Drawing.SystemColors.Control;
-            this.PauseRecordingButton.Image = global::selnium.Properties.Resources.pause_recording;
-            this.PauseRecordingButton.Location = new System.Drawing.Point(34, 102);
-            this.PauseRecordingButton.Name = "PauseRecordingButton";
-            this.PauseRecordingButton.Size = new System.Drawing.Size(35, 35);
-            this.PauseRecordingButton.TabIndex = 10;
-            this.PauseRecordingButton.UseVisualStyleBackColor = true;
-            this.PauseRecordingButton.Click += new System.EventHandler(this.PauseRecordingButton_Click);
-            // 
             // PlaybackGroupBox
             // 
             this.PlaybackGroupBox.Controls.Add(this.button1);
             this.PlaybackGroupBox.Controls.Add(this.LoadButton);
-            this.PlaybackGroupBox.Controls.Add(this.PlayButton);
             this.PlaybackGroupBox.Controls.Add(this.label6);
-            this.PlaybackGroupBox.Controls.Add(this.PauseButton);
             this.PlaybackGroupBox.Controls.Add(this.PlayPauseLabel);
+            this.PlaybackGroupBox.Controls.Add(this.PlayButton);
+            this.PlaybackGroupBox.Controls.Add(this.PauseButton);
             this.PlaybackGroupBox.Location = new System.Drawing.Point(12, 233);
             this.PlaybackGroupBox.Name = "PlaybackGroupBox";
             this.PlaybackGroupBox.Size = new System.Drawing.Size(167, 148);
