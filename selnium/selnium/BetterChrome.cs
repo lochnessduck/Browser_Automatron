@@ -11,7 +11,7 @@ using System.Drawing.Imaging;
 
 namespace selnium
 {
-    class BetterChrome : ChromeDriver
+    public class BetterChrome : ChromeDriver
     {
 
         public BetterChrome(string filename) : base(filename)
@@ -97,6 +97,7 @@ namespace selnium
             highlight.On();
             IWebElement e = FindElement(by);
             System.Threading.Thread.Sleep(500);
+            e.Clear();
             e.SendKeys(text);
             System.Threading.Thread.Sleep(100); // kinda important
             highlight.Off();

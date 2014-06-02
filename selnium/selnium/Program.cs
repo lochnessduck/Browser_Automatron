@@ -30,7 +30,7 @@ namespace selnium
 
     public class Program
     {
-        BetterChrome driver = new BetterChrome(@"C:\selenium\");  //ChromeDriver(@"C:\selenium\");
+        public BetterChrome driver = new BetterChrome(@"C:\selenium\");  //ChromeDriver(@"C:\selenium\");
         JavaScriptFunctions JavaScript = new JavaScriptFunctions();
         GUI form = new GUI();
         Stylesheet stylesheet = new Stylesheet();
@@ -47,8 +47,8 @@ namespace selnium
 
         public void ThreadProc()
         {
-            Application.Run(form);
-            form.Show(); // seems to block parallel application execution
+            form.Show();
+            Application.Run(form);// seems to block parallel application execution
             //Application.Run(new GUI());
         }
 

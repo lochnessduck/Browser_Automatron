@@ -42,8 +42,8 @@ namespace selnium
 
         private void GoButton_Click(object sender, EventArgs e)
         {
-            driver.Url = navigateToTextBox.Text;
-            driver.Navigate();
+            this.program.driver.Url = navigateToTextBox.Text;
+            this.program.driver.Navigate();
         }
 
         private void RecordButton_Click(object sender, EventArgs e)
